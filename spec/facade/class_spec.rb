@@ -34,7 +34,7 @@ module Schizo
       end
 
       it "#initialize has arity == 2" do
-        base.instance_method(:initialize).arity.should == 0
+        base.instance_method(:initialize).arity.should < 2
         facade.instance_method(:initialize).arity.should == 2
       end
 
