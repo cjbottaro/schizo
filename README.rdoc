@@ -1,0 +1,148 @@
+== Schizo
+
+Schizo is a libary that aids in using DCI (data, context and interaction) in Ruby/Rails projects.  It aims
+to overcome some of the shortcomings of using plain <tt>Object#extend</tt>, namely the issue that extending
+a role can permenantly alter a class.
+
+== Quickstart
+
+Dive in...
+
+  class User < ActiveRecord::Base
+    include Schizo::Data
+  end
+
+  module Poster
+    extend Schizo::Role
+
+    extended do
+      has_many :posts
+    end
+
+    def post_count_in_english
+      "#{name} has #{posts.count} post(s)"
+    end
+  end
+
+  user = User.find(1)
+  user.as(Poster) do |poster|
+    poster.respond_to?(:posts) # => true
+    user.respond_to?(:posts)   # => false
+
+    poster.respond_to?(:post_count_in_english) # => true
+    user.respond_to?(:post_count_in_english)   # => false
+
+    poster.kind_of?(User)     # => true
+    poster.instance_of?(User) # => true
+    
+    poster.class.name # => "User"
+  end
+
+== The Problem
+
+So what's wrong with just using <tt>Object#extend</tt> ?  Nothing, until you want to alter an instance's class
+as a part of adorning it with a role... which happens often when using ActiveRecord.
+
+Consider the following use of DCI and ActiveRecord with plain old <tt>Object#extend</tt>:
+
+  class User < ActiveRecord::Base
+  end
+
+  module Poster
+    def self.extended(object)
+      object.class.class_eval do
+        has_many :posts
+      end
+    end
+
+    def post_count_in_english
+      "#{name} has #{posts.count} post(s)"
+    end
+  end
+
+  user1 = User.find(1)
+  user1.extend(Poster)
+  user1.respond_to?(:posts) # Ok
+
+  user2 = User.find(2)
+  user2.respond_to?(:posts) # Oops, extending user1 ended up changing *all* users!
+
+That goes against the core concept in DCI that your data should only be injected with behavior for a specific
+context.
+
+== The Magic
+
+So how does Schizo work?  It creates <i>facade classes</i> and <i>facade objects</i> that stand in for the
+classes and objects you really want.  The facades try to quack as best they can like the real objects/classes.
+
+This is easier to explain in an example (continuing from the Quickstart example):
+
+  user = User.find(1)
+  user.as(Poster) do |poster|
+    poster.kind_of?(User)     # => true
+    poster.instance_of?(User) # => true
+    
+    poster.class.name # => "User"
+    poster.class      # => Schizo::Facades::User::Poster
+  end
+
+<tt>Schizo::Facades::User::Poster</tt> inherits from +User+, that's why <tt>poster.kind_of?(User)</tt> works natrually.
+<tt>poster.instance_of?(User)</tt> works because of the facade consciously trying to quack like +User+.
+
+== Facades and Objects
+
+So knowing you're working with a facade instead of the original object, some of the gotchas become obvious.
+
+  class Foo
+    include Schizo::Data
+    attr_reader :bar
+    def initialize
+      @bar = "low"
+    end
+  end
+
+  module Baz
+    extend Schizo::Role
+    def set_bar(value)
+      @bar = value
+    end
+  end
+
+  foo = Foo.new
+  baz = foo.as(Baz)
+  baz.set_bar("high")
+  baz.bar # => "high"
+  foo.bar # => "low"
+
+Makes perfect sense, right?  But what about this...
+
+  foo = Foo.new
+  foo.as(Baz) do |baz|
+    baz.set_bar("high")
+  end
+  foo.bar # => "high"
+
+What?!  Nah, it's really simple.  At the end of the code block, +baz.actualize+ is called.  All +#actualize+ does
+is copy over the instances variables from the facade to the real object.
+
+You can get the exact same affect by doing:
+
+  foo = Foo.new
+  baz = foo.as(Baz)
+  baz.set_bar("high")
+  baz.actualize
+  foo.bar # => "high"
+
+Hmm, maybe +#actualize+ should be renamed +#converge+... what do you think?
+
+== Documentation
+
+{\http://doc.stochasticbytes.com/schizo/index.html}[http://doc.stochasticbytes.com/schizo/index.html]
+
+== Contact
+
+{@cjbottaro}[http://twitter.com/cjbottaro]
+
+== Liscense
+
+MIT or something
