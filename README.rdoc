@@ -1,4 +1,4 @@
-== Schizo
+== Schizo {<img src="https://secure.travis-ci.org/cjbottaro/schizo.png" />}[http://travis-ci.org/cjbottaro/schizo]
 
 Schizo is a libary that aids in using DCI (data, context and interaction) in Ruby/Rails projects.  It aims
 to overcome some of the shortcomings of using plain <tt>Object#extend</tt>, namely the issue that extending
