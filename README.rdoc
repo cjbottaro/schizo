@@ -38,10 +38,22 @@ Dive in...
     poster.class.name # => "User"
   end
 
+== DCI
+
+{\http://en.wikipedia.org/wiki/Data,_context_and_interaction}[http://en.wikipedia.org/wiki/Data,_context_and_interaction]
+
+{\http://mikepackdev.com/blog_posts/24-the-right-way-to-code-dci-in-ruby}[http://mikepackdev.com/blog_posts/24-the-right-way-to-code-dci-in-ruby]
+
+{\http://saturnflyer.com/blog/jim/2011/10/04/oop-dci-and-ruby-what-your-system-is-vs-what-your-system-does/}[http://saturnflyer.com/blog/jim/2011/10/04/oop-dci-and-ruby-what-your-system-is-vs-what-your-system-does/]
+
+{\http://victorsavkin.com/post/13966712168/dci-in-ruby}[http://victorsavkin.com/post/13966712168/dci-in-ruby]
+
+{\http://andrzejonsoftware.blogspot.com/2011/02/dci-and-rails.html}[http://andrzejonsoftware.blogspot.com/2011/02/dci-and-rails.html]
+
 == The Problem
 
-So what's wrong with just using <tt>Object#extend</tt> ?  Nothing, until you want to alter an instance's class
-as a part of adorning it with a role... which happens often when using ActiveRecord.
+So what's wrong with just using <tt>Object#extend</tt>?  Nothing, until you want to alter an instance's class
+as a side effect of adorning it with a role... which happens often when using ActiveRecord.
 
 Consider the following use of DCI and ActiveRecord with plain old <tt>Object#extend</tt>:
 
@@ -134,6 +146,21 @@ You can get the exact same affect by doing:
   foo.bar # => "high"
 
 Hmm, maybe +#actualize+ should be renamed +#converge+... what do you think?
+
+== Multiple Roles and Nesting
+
+You can adorn a data object with more than one role...
+
+  poster = User.new.as(Poster)
+  commenter = poster.as(Commenter) # Has all the methods of a Commenter AND Poster
+
+Alternatively...
+
+  User.new.as(Poster) do |poster|
+    poster.as(Commenter) do |commenter|
+      # Has all the methods of a Commenter AND Poster
+    end
+  end
 
 == Documentation
 
