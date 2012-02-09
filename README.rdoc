@@ -53,7 +53,7 @@ Dive in...
 == The Problem
 
 So what's wrong with just using <tt>Object#extend</tt>?  Nothing, until you want to avoid altering an instance's class
-as a side effect of adorning the instance it with a role... which happens often when using ActiveRecord.
+as a side effect of adorning the instance with a role... which happens often when using ActiveRecord.
 
 Consider the following use of DCI and ActiveRecord with plain old <tt>Object#extend</tt>:
 
