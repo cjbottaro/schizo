@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Schizo::VERSION
   s.authors     = ["Christopher J. Bottaro"]
   s.email       = ["cjbottaro@alumni.cs.utexas.edu"]
-  s.homepage    = ""
+  s.homepage    = "https://github.com/cjbottaro/schizo"
   s.summary     = %q{DCI (data, context and interaction) for Ruby / Rails / ActiveRecord}
-  s.description = %q{Tries to alleviate some of the issues of using DCI with Ruby, Rails and/or ActiveRecord}
+  s.description = %q{DCI (data, context and interaction) for Ruby / Rails / ActiveRecord}
 
   s.rubyforge_project = "schizo"
 
