@@ -34,7 +34,7 @@ Dive in...
 
     poster.kind_of?(User)     # => true
     poster.instance_of?(User) # => true
-    
+
     poster.class.name # => "User"
   end
 
