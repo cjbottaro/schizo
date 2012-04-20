@@ -25,6 +25,15 @@ module Schizo
         ClassBuilder.new(base, role)
       end
 
+      it "works with namespaced roles" do
+        role.module_eval do
+          def self.name
+            "Namespaced::Role"
+          end
+        end
+        builder.product.to_s.should == "Schizo::Facades::Foo::Namespaced::Role"
+      end
+
       context "#initialize" do
 
         it "sets base and role" do

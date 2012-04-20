@@ -8,13 +8,26 @@ module Schizo
         @base, @role = base, role
       end
 
+      # Returns a new class derived off of +base+ and namespaced under role.
+      # Ex:
+      #   builder = ClassBuilder.new(User, Poster)
+      #   builder.product                           # => Schizo::Facades::User::Poster
+      #   builder.product.kind_of?(User)            # => true
       def product
-        @product ||= role_class
+        @product ||= begin
+          if container_module.const_defined?(class_name, false)
+            container_module.const_get(class_name)
+          else
+            klass = Class.new(base){ include Base }
+            klass.class_eval(&role.extended_block) if role.extended_block
+            container_module.const_set(class_name, klass)
+          end
+        end
       end
 
     private
 
-      def module_name
+      def base_name
         base.name || "AnonClass#{base.object_id}"
       end
 
@@ -22,29 +35,38 @@ module Schizo
         role.name || "AnonRole#{role.object_id}"
       end
 
+      def full_name
+        @full_name ||= "Schizo::Facades::#{base_name}::#{role_name}"
+      end
+
+      def parsed_full_name
+        @parsed_full_name ||= full_name.split("::")
+      end
+
+      def module_names
+        @container_module_name ||= parsed_full_name[0..-2]
+      end
+
+      def class_name
+        @class_name ||= parsed_full_name[-1]
+      end
+
       def container_module
         @container_module ||= begin
-          if Schizo::Facades.const_defined?(module_name, false)
-            Schizo::Facades.const_get(module_name)
-          else
-            Schizo::Facades.const_set(module_name, Module.new)
+          names = module_names
+          mod = get_or_create_module(Object, names.shift)
+          while not names.empty?
+            mod = get_or_create_module(mod, names.shift)
           end
+          mod
         end
       end
 
-      def role_class
-        @role_class ||= begin
-          if container_module.const_defined?(role_name, false)
-            container_module.const_get(role_name)
-          else
-            container_module.const_set(role_name, build)
-          end
-        end
-      end
-      
-      def build
-        Class.new(base){ include Base }.tap do |klass|
-          klass.class_eval(&role.extended_block) if role.extended_block
+      def get_or_create_module(mod, name)
+        if mod.const_defined?(name, false)
+          mod.const_get(name)
+        else
+          mod.const_set(name, Module.new)
         end
       end
 
