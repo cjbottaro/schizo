@@ -46,12 +46,18 @@ describe "a nested facade for ClassA with RoleA, RoleB and RoleC" do
     facade_b.as(role_c)
   end
 
+  let(:facade_a_b_c) do
+    object.as(role_a, role_b, role_c)
+  end
+
   it "#instance_of?(ClassA) is true" do
     facade_c.should be_instance_of(class_a)
+    facade_a_b_c.should be_instance_of(class_a)
   end
 
   it "#kind_of?(ClassA) is true" do
     facade_c.should be_kind_of(class_a)
+    facade_a_b_c.should be_kind_of(class_a)
   end
 
   it "should have methods from RoleA, RoleB and RoleC" do
@@ -66,6 +72,10 @@ describe "a nested facade for ClassA with RoleA, RoleB and RoleC" do
     facade_c.should respond_to(:set_foo)
     facade_c.should respond_to(:set_bar)
     facade_c.should respond_to(:set_baz)
+
+    facade_a_b_c.should respond_to(:set_foo)
+    facade_a_b_c.should respond_to(:set_bar)
+    facade_a_b_c.should respond_to(:set_baz)
   end
 
   it "#actualize should walk up the chain" do
