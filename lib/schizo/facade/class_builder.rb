@@ -19,7 +19,7 @@ module Schizo
             container_module.const_get(class_name)
           else
             klass = Class.new(base){ include Base }
-            if role.is_a?(ActiveSupport::Concern)
+            if defined?(ActiveSupport::Concern) and role.is_a?(ActiveSupport::Concern)
               klass.send :include, role
             elsif role.is_a?(Schizo::Role)
               klass.class_eval(&role.extended_block) if role.extended_block
