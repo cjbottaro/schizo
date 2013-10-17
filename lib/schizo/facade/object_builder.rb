@@ -35,11 +35,15 @@ module Schizo
           # its role into facade we're building.
           previous_facade = object
           while previous_facade.respond_to?(:dci)
-            facade.extend(previous_facade.dci.role)
+            if previous_facade.dci.role.is_a?(Schizo::Role)
+              facade.extend(previous_facade.dci.role)
+            end
             previous_facade = previous_facade.dci.object
           end
-
-          facade.extend(role)
+          
+          if role.is_a?(Schizo::Role)
+            facade.extend(role)
+          end
           Schizo::Facade.copy_instance_variables(object, facade)
         end
       end

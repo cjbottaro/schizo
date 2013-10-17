@@ -25,7 +25,7 @@ describe "a nested facade for ClassA with RoleA, RoleB and RoleC" do
 
   let(:role_c) do
     Module.new do
-      extend Schizo::Role
+      extend ActiveSupport::Concern
       def set_baz; @baz = "baz"; end
     end
   end
