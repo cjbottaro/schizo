@@ -1,10 +1,7 @@
-rvm:
-  - 1.9.2
-  - 1.9.3
-gemfiles:
-  - .gemfiles/Gemfile.activerecord-3.2
-  - Gemfile
 matrix:
+  exclude:
+    - rvm: ""
+      gemfile: ""
   include:
     - rvm: 1.9.2
       gemfile: .gemfiles/Gemfile.activerecord-3.2
