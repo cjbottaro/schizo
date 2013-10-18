@@ -162,6 +162,19 @@ Alternatively...
     end
   end
 
+== ActiveSupport::Concern
+
+You can use <tt>ActiveSupport::Concern</tt> instead of <tt>Schizo::Role</tt>
+
+  module Baz
+    extend ActiveSupport::Concern
+    def something; end
+  end
+  
+  foo = Foo.new
+  baz = foo.as(Baz)
+  baz.something
+
 == Documentation
 
 {\http://doc.stochasticbytes.com/schizo/index.html}[http://doc.stochasticbytes.com/schizo/index.html]

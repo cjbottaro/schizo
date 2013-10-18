@@ -1,11 +1,14 @@
+0.2.0
+  * Support for ActiveSupport::Concern
+
 0.1.3
   * Specify multiple roles as argument list to #as (andriytyurnikov)
 
 0.1.2
-	* Allow roles to be namespaced
+  * Allow roles to be namespaced
 
 0.1.1
-	* Updated gemspec info
+  * Updated gemspec info
 
 0.1.0
-	* Initial release
+  * Initial release
