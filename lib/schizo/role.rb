@@ -13,31 +13,37 @@ module Schizo
   module Role
 
     # call-seq:
-    #   extended{ ... }
+    #   included{ ... }
     #
     # Call this method with a block and that block will be evaled by the Data object's class when
     # the Data object is adorned with this role.
     #   module Poster
     #     extend Schizo::Role
     #
-    #     extended do
+    #     included do
     #       has_many :posts
     #     end
     #   end
     #
-    #   User.new.as(Poster).do |poster|
-    #     poster.posts.create :title => "My first post!"
-    #   end
-    def extended(object = nil, &block)
-      if block_given?
-        @extended_block = block
-      else
+    #   poster = User.new.as(Poster)
+    #   poster.posts.create :title => "My first post!"
+    def included(base = nil, &block)
+      if base
         super
+      else
+        @included_block = block
       end
     end
 
-    def extended_block #:nodoc:
-      @extended_block
+    def append_features(base)
+      # Instance methods
+      super
+
+      # Class methods
+      base.extend(const_get(:ClassMethods)) if const_defined?(:ClassMethods)
+
+      # Included block
+      base.class_eval(&@included_block) if @included_block
     end
 
   end
