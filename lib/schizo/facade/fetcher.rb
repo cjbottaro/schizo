@@ -1,5 +1,4 @@
 require "thread"
-require "delegate"
 
 module Schizo
   module Facade
@@ -7,10 +6,9 @@ module Schizo
 
       @lock = Mutex.new
       @facades = {}
-      @hacked_classes = Set.new
 
       class << self
-        attr_reader :lock, :facades, :hacked_classes
+        attr_reader :lock, :facades
       end
 
       attr_reader :base_class, :roles
@@ -37,9 +35,9 @@ module Schizo
       def facade_class
         @facade_class ||= begin
           facade_class = Class.new(base_class){ include(Schizo::Facade) }
+          roles.each{ |role| facade_class.send(:include, role) }
           meta_data = Struct.new(:name, :roles).new(base_class.name, roles)
           facade_class.instance_variable_set(:@schizo, meta_data)
-          roles.each{ |role| facade_class.send(:include, role) }
           facade_class
         end
       end
@@ -62,7 +60,6 @@ module Schizo
 
       def lock; self.class.lock; end
       def facades; self.class.facades; end
-      def hacked_classes; self.class.hacked_classes; end
 
     end
   end
