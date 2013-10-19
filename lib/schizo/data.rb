@@ -8,7 +8,7 @@ module Schizo
     #   poster = user.as(Poster)
     #   poster.make_post("Hello world")
     def as(*roles)
-      Facade::Class.fetch(self.class, roles).new(self)
+      Facade.fetch(self.class, roles).new(self)
     end
 
   end
