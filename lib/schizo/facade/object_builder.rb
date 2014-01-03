@@ -11,10 +11,10 @@ module Schizo
     end
 
     class ObjectBuilder #:nodoc:
-      attr_reader :object, :role
+      attr_reader :object, :facade_class, :role
 
-      def initialize(object, role)
-        @object, @role = object, role
+      def initialize(object, facade_class, role)
+        @object, @facade_class, @role = object, facade_class, role
       end
 
       def product
@@ -22,10 +22,6 @@ module Schizo
       end
 
     private
-
-      def facade_class
-        @facade_class ||= ClassBuilder.new(object.class, role).product
-      end
 
       def build
         facade_class.new(object, role).tap do |facade|

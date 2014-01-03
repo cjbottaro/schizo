@@ -22,7 +22,8 @@ module Schizo
       first_role = roles.first
       rest_roles = *roles[1..-1]
       if rest_roles.empty?
-        facade = Facade::ObjectBuilder.new(self, first_role).product
+        facade_class = Facade::ClassBuilder.new(self.class, first_role).product
+        facade = Facade::ObjectBuilder.new(self, facade_class, first_role).product
         if block_given?
           block.call(facade)
           facade.actualize
