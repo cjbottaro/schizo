@@ -32,12 +32,16 @@ module Schizo
         base.new
       end
 
+      let(:facade_class) do
+        ClassBuilder.new(object.class, role).product
+      end
+
       let(:builder) do
-        ObjectBuilder.new(object, role)
+        ObjectBuilder.new(object, facade_class, role)
       end
 
       let(:concern_builder) do
-        ObjectBuilder.new(object, concern)
+        ObjectBuilder.new(object, facade_class, concern)
       end
 
       context "#initialize" do
