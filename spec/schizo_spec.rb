@@ -38,10 +38,6 @@ module SchizoSpec
         expect(bar.bar4).to eq("bar4")
       end
 
-      it "can return a list of roles" do
-        expect(bar.schizo.roles).to eq([Bar])
-      end
-
       it "facade is not #instance_of base object or base class" do
         expect(bar).to_not be_instance_of(Bar)
         expect(bar).to_not be_instance_of(Foo)

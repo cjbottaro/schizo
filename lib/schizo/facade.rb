@@ -13,16 +13,8 @@ module Schizo
 
     module ClassMethods
 
-      def schizo
-        @schizo
-      end
-
       def name
-        if defined?(binding.pry) and caller.any?{ |line| line =~ /pry\/commands\/ls.rb/ }
-          "Schizo::Facade(0x%014x)" % object_id
-        else
-          schizo.name
-        end
+        @schizo_name
       end
 
       def to_s
@@ -51,10 +43,6 @@ module Schizo
       object.instance_variables.each do |name|
         instance_variable_set(name, object.instance_variable_get(name))
       end
-    end
-
-    def schizo
-      self.class.schizo
     end
 
     def inspect

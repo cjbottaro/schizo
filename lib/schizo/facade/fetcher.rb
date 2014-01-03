@@ -37,8 +37,7 @@ module Schizo
       def facade_class
         @facade_class ||= begin
           facade_class = Class.new(base_class){ include(Schizo::Facade) }
-          meta_data = Struct.new(:name, :roles).new(base_class.name, roles)
-          facade_class.instance_variable_set(:@schizo, meta_data)
+          facade_class.instance_variable_set(:@schizo_name, base_class.name)
           roles.each{ |role| facade_class.send(:include, role) }
           facade_class
         end
