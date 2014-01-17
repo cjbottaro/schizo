@@ -19,18 +19,12 @@ module Schizo
     #   poster.name = "coco"
     #   user.name # => "callie"
     def as(*roles, &block)
-      first_role = roles.first
-      rest_roles = *roles[1..-1]
-      if rest_roles.empty?
-        facade = Facade::FacadeBuilder.new(self, first_role).product
-        if block_given?
-          block.call(facade)
-          facade.actualize
-        else
-          facade
-        end
+      facade = Facade::FacadeBuilder.build_facade(self, *roles)
+      if block_given?
+        block.call(facade)
+        facade.actualize
       else
-        as(first_role).as(*rest_roles, &block)        
+        facade
       end
     end
 

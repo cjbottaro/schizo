@@ -2,21 +2,19 @@ module Schizo
   module Facade #:nodoc:
     class FacadeBuilder #:nodoc:
 
-      attr_reader :object, :role
+      def self.build_facade(object, *roles)
+        first_role = roles.first
+        rest_roles = *roles[1..-1]
 
-      def initialize(object, role)
-        @object, @role = object, role
+        if rest_roles.empty? # end of recursive call
+          facade_class = Facade::ClassBuilder.new(object.class, first_role).product
+          facade = Facade::ObjectBuilder.new(object, facade_class, first_role).product
+        else # in recursive call
+          first_facade = build_facade(object, first_role)
+          build_facade(first_facade, *rest_roles)
+        end
+        
       end
-
-      # Returns a facade
-      # Ex:
-      #   builder = FacadeBuilder.new(user, Poster)
-      #   builder.product                           # => Schizo::Facades::User::Poster
-      def product
-        facade_class = Facade::ClassBuilder.new(object.class, role).product
-        facade = Facade::ObjectBuilder.new(object, facade_class, role).product
-      end
-
 
     end
   end
