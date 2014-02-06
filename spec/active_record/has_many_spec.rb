@@ -8,7 +8,7 @@ describe "an ActiveRecord instance" do
     let(:role) do
       Module.new do
         extend Schizo::Role
-        extended do
+        included do
           has_many :posts
         end
       end

@@ -14,7 +14,7 @@ module Schizo
       let(:role) do
         Module.new do
           extend Role
-          extended do
+          included do
             @test_var = 1
           end
         end
