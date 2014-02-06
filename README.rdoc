@@ -15,7 +15,7 @@ Dive in...
   module Poster
     extend Schizo::Role
 
-    extended do
+    included do
       has_many :posts
     end
 
